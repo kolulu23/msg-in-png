@@ -1,3 +1,4 @@
+#![allow(non_snake_case)]
 //! # Chunk
 //! Implementation of a PNG chunk
 //!
@@ -33,6 +34,9 @@ pub struct Chunk {
 }
 
 impl Chunk {
+    /// Construct a `Chunk` from given chunk type and data.
+    /// Notice that this method does not check if `data` is valid for given `chunk_type`.
+    /// Chunk length and crc are calculate automatically.
     pub fn new(chunk_type: ChunkType, data: Vec<u8>) -> Self {
         let mut crc_hasher = Hasher::new();
         crc_hasher.update(chunk_type.inner.as_slice());
@@ -115,12 +119,12 @@ impl TryFrom<&[u8]> for Chunk {
 
 impl Display for Chunk {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "Chunk {{",)?;
+        writeln!(f, "Chunk {{", )?;
         writeln!(f, "  Length: {}", self.length())?;
         writeln!(f, "  Type: {}", self.chunk_type())?;
         writeln!(f, "  Data: {} bytes", self.data().len())?;
         writeln!(f, "  Crc: {}", self.crc())?;
-        writeln!(f, "}}",)?;
+        writeln!(f, "}}", )?;
         Ok(())
     }
 }

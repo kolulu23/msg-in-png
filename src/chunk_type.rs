@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 //! # Chunk Type
 //! PNG files are essentially just a list of "chunks", each containing their own data.
 //! Each chunk has a type that can be represented as a 4 character string.
@@ -14,6 +15,7 @@ pub struct ChunkType {
 }
 
 impl ChunkType {
+
     /// Get bytes from this type, bytes are copied.
     pub fn bytes(&self) -> [u8; 4] {
         return self.inner;
@@ -67,8 +69,8 @@ impl FromStr for ChunkType {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let source_bytes = s.as_bytes();
-        if source_bytes.len() < 4 {
-            return Err(Self::Err::msg("Not enough bytes"));
+        if source_bytes.len() != 4 {
+            return Err(Self::Err::msg("Chunk type str must be 4 bytes"));
         }
         let mut chunk_bytes: [u8; 4] = [0; 4];
         for (index, byte) in source_bytes[0..4].iter().enumerate() {
