@@ -7,7 +7,7 @@ mod commands;
 mod png;
 mod tests;
 
-use std::fs::{File, OpenOptions};
+use std::fs::{File, OpenOptions, Permissions};
 use std::io::{BufWriter, Read, Seek, Write};
 use std::str::FromStr;
 use crate::args::*;
@@ -50,7 +50,9 @@ fn main() -> Result<()> {
         }
         Command::Remove { chunk_type } => {
             let _msg_chunk = png.remove_chunk(&chunk_type)?;
-            file.write_all(png.as_bytes().as_slice())?;
+            let bytes = png.as_bytes();
+            file.set_len(bytes.len() as u64)?;
+            file.write_all(bytes.as_slice())?;
             println!("One message of type {} has been removed", chunk_type);
         }
         Command::Print => {
