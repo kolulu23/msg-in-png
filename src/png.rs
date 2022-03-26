@@ -1,12 +1,12 @@
 #![allow(dead_code)]
 //! # PNG
 //! Png file structure according to its spec.
+use crate::chunk::Chunk;
+use crate::chunk_type::ChunkType;
+use anyhow::{anyhow, Result};
 use std::fmt::{Display, Formatter};
 use std::io::{BufRead, BufReader, Read};
 use std::str::FromStr;
-use crate::chunk::Chunk;
-use anyhow::{anyhow, Result};
-use crate::chunk_type::ChunkType;
 
 /// The PNG file structure
 pub struct PNG {
@@ -43,9 +43,11 @@ impl PNG {
     /// Removes the first chunk that matches given `chunk_type`
     pub fn remove_chunk(&mut self, chunk_type: &str) -> Result<Chunk> {
         let chunk_type = ChunkType::from_str(chunk_type)?;
-        let result = self.chunks.iter().enumerate().find(|(_, item)| {
-            item.chunk_type().eq(&chunk_type)
-        });
+        let result = self
+            .chunks
+            .iter()
+            .enumerate()
+            .find(|(_, item)| item.chunk_type().eq(&chunk_type));
         match result {
             None => {}
             Some((index, _)) => {
@@ -55,9 +57,13 @@ impl PNG {
         Err(anyhow!("No such type"))
     }
 
-    pub fn header(&self) -> &[u8; 8] { &self.signature }
+    pub fn header(&self) -> &[u8; 8] {
+        &self.signature
+    }
 
-    pub fn chunks(&self) -> &[Chunk] { self.chunks.as_slice() }
+    pub fn chunks(&self) -> &[Chunk] {
+        self.chunks.as_slice()
+    }
 
     pub fn chunk_by_type(&self, chunk_type: &str) -> Option<&Chunk> {
         let chunk_type = ChunkType::from_str(chunk_type);
@@ -77,10 +83,8 @@ impl PNG {
         self.signature
             .iter()
             .copied()
-            .chain(self.chunks
-                .iter()
-                .flat_map(|chunk| { chunk.as_bytes() })
-            ).collect()
+            .chain(self.chunks.iter().flat_map(|chunk| chunk.as_bytes()))
+            .collect()
     }
 }
 
@@ -118,10 +122,7 @@ impl TryFrom<&[u8]> for PNG {
             }
             chunks.push(chunk);
         }
-        Ok(PNG {
-            signature,
-            chunks,
-        })
+        Ok(PNG { signature, chunks })
     }
 }
 

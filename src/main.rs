@@ -7,15 +7,15 @@ mod commands;
 mod png;
 mod tests;
 
-use std::fs::{File, OpenOptions, Permissions};
-use std::io::{BufWriter, Read, Seek, Write};
-use std::str::FromStr;
 use crate::args::*;
-use anyhow::Result;
-use clap::{Parser};
 use crate::chunk::Chunk;
 use crate::chunk_type::ChunkType;
 use crate::png::PNG;
+use anyhow::Result;
+use clap::Parser;
+use std::fs::{File, OpenOptions, Permissions};
+use std::io::{BufWriter, Read, Seek, Write};
+use std::str::FromStr;
 
 fn main() -> Result<()> {
     let cli: Cli = Cli::parse();
@@ -30,7 +30,11 @@ fn main() -> Result<()> {
     file.rewind()?;
     let mut png = PNG::try_from(data.as_slice())?;
     match cli.command {
-        Command::Encode { chunk_type, message, output } => {
+        Command::Encode {
+            chunk_type,
+            message,
+            output,
+        } => {
             let msg_chunk_type = ChunkType::from_str(&chunk_type)?;
             let msg_chunk = Chunk::new(msg_chunk_type, message.into_bytes());
             png.append_chunk(msg_chunk);
@@ -39,7 +43,10 @@ fn main() -> Result<()> {
                 let mut writer = BufWriter::new(output_file);
                 writer.write_all(png.as_bytes().as_slice())?;
             } else {
-                println!("Trying to overwrite original file: {:?}", cli.png.as_path().canonicalize()?);
+                println!(
+                    "Trying to overwrite original file: {:?}",
+                    cli.png.as_path().canonicalize()?
+                );
                 file.write_all(png.as_bytes().as_slice())?;
             }
         }

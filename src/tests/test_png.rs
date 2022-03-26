@@ -1,11 +1,11 @@
 #[cfg(test)]
 mod tests {
-    use crate::chunk_type::ChunkType;
     use crate::chunk::Chunk;
-    use std::str::FromStr;
-    use std::convert::TryFrom;
+    use crate::chunk_type::ChunkType;
     use crate::png::PNG;
     use anyhow::Result;
+    use std::convert::TryFrom;
+    use std::str::FromStr;
 
     fn testing_chunks() -> Vec<Chunk> {
         let mut chunks = Vec::new();
@@ -94,7 +94,6 @@ mod tests {
 
         assert!(png.is_err());
     }
-
 
     #[test]
     fn test_list_chunks() {

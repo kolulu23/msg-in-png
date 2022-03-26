@@ -15,7 +15,6 @@ pub struct ChunkType {
 }
 
 impl ChunkType {
-
     /// Get bytes from this type, bytes are copied.
     pub fn bytes(&self) -> [u8; 4] {
         return self.inner;

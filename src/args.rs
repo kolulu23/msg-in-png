@@ -1,5 +1,5 @@
+use clap::{AppSettings, Parser, Subcommand};
 use std::path::PathBuf;
-use clap::{Parser, Subcommand, AppSettings};
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -11,7 +11,6 @@ pub struct Cli {
     /// Path to target png file
     #[clap(short, parse(from_os_str), value_name = "FILE")]
     pub png: PathBuf,
-
 }
 
 #[derive(Subcommand, Debug)]
@@ -24,13 +23,9 @@ pub enum Command {
         output: Option<PathBuf>,
     },
     /// Get a message from a png file
-    Decode {
-        chunk_type: String,
-    },
+    Decode { chunk_type: String },
     /// Remove a message from a png file
-    Remove {
-        chunk_type: String,
-    },
+    Remove { chunk_type: String },
     /// Print given png file
     Print,
 }
